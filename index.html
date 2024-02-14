@@ -7,6 +7,7 @@
         body {
             color: #5d5d6d;
             font-family: Helvetica, Arial, sans-serif;
+            background-color: #0b021a;
         }
 
         h1 {
@@ -26,6 +27,8 @@
 
         .mapael .map {
             position: relative;
+            background-color: #0b021a;
+            stroke-width: 1;
         }
     </style>
 
@@ -48,35 +51,34 @@
                     name: "world_countries",
                     defaultArea: {
                         attrs: {
-                            fill: "#f4f4e8"
-                            , stroke: "#ced8d0"
+                            fill: "#0b021a"
+                            , stroke: "#faffe6",
+                            "stroke-width": 0.3
                         }
                     },
                     // Default attributes can be set for all links
                     defaultLink: {
                         factor: 0.2
                         , attrsHover: {
-                            stroke: "#a4e100"
+                            stroke: "#fffeba"
                         },
                         attrs: {
-                            "stroke-width": 1,
-                            stroke: "#5e5959"
+                            "stroke-width": 0.7,
+                            stroke: "#fffeba",
+                            "stroke-dasharray": "-"
                         }
                     }
                     , defaultPlot: {
                         attrs: {
-                            fill: "#000",
+                            fill: "#FF0000",
                         },
                         text: {
                             attrs: {
-                                fill: "#000",
-                                "font-size": "5px"
-                            },
-                            attrsHover: {
-                                fill: "#000"
+                                fill: "#ad9e9e",
+                                "font-size": "3px"
                             }
                         },
-                        size: 3
+                        size: 2
                     }
                 },
                 plots: plots,
