@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
-    <title>Map with links between the plotted cities</title>
     <style type="text/css">
         body {
-            color: #5d5d5d;
+            color: #5d5d6d;
             font-family: Helvetica, Arial, sans-serif;
         }
 
@@ -27,20 +27,18 @@
         .mapael .map {
             position: relative;
         }
-
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" charset="utf-8"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"
-            charset="utf-8"></script>
+        charset="utf-8"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js" charset="utf-8"></script>
     <script src="./js/jquery.mapael.js" charset="utf-8"></script>
     <script src="./js/maps/world_countries.js" charset="utf-8"></script>
 
     <script type="text/javascript">
-                let users, plots={},
-                links={};
-                ;
+        let users, plots = {},
+            links = {};
 
         $(function () {
 
@@ -55,7 +53,7 @@
                         }
                     },
                     // Default attributes can be set for all links
-                     defaultLink: {
+                    defaultLink: {
                         factor: 0.2
                         , attrsHover: {
                             stroke: "#a4e100"
@@ -67,12 +65,12 @@
                     }
                     , defaultPlot: {
                         attrs: {
-                                fill: "#000",
-                            },
+                            fill: "#000",
+                        },
                         text: {
                             attrs: {
                                 fill: "#000",
-                                "font-size":"5px"
+                                "font-size": "5px"
                             },
                             attrsHover: {
                                 fill: "#000"
@@ -88,53 +86,67 @@
         });
 
         fetch("https://connections-societal-thinking-f49fc4a0c28b.herokuapp.com/users")
-        .then( async (res)=>{
-            const users = await res.json();
-            users.map((value)=>{
-                if(value.longitude){
-                let modifiedValue = {...value, text: {content: value.name}};
-                plots[value._id] = modifiedValue;
-                }
+            .then(async (res) => {
+                const users = await res.json();
+                users.map((value) => {
+                    if (value.longitude) {
+                        let modifiedValue = { ...value, text: { content: value.name } };
+                        plots[value._id] = modifiedValue;
+                    }
+                });
+                console.log(plots);
+                $(".mapcontainer").trigger('update', [{
+                    replaceOptions: false,
+                    newPlots: plots,
+                    animDuration: 2000
+                }]);
+            }).then(() => {
+                fetch("https://connections-societal-thinking-f49fc4a0c28b.herokuapp.com/connections")
+                .then(async (res) => {
+                    const users = await res.json();
+                    users.map((value) => {
+                        links[`${value.users[0]}${value.users[1]}`] = { between: value.users };
+                    });
+                }).then(() => {
+                    $(".mapcontainer").trigger('update', [{
+                        replaceOptions: false,
+                        newLinks: links,
+                        animDuration: 2000
+                    }]);
+                });
             });
 
-            fetch("https://connections-societal-thinking-f49fc4a0c28b.herokuapp.com/connections")
-        .then( async (res)=>{
-            const users = await res.json();
-            users.map((value)=>{
-                links[`${value.users[0]}${value.users[1]}`] = {between: value.users};
-            });
+
+
+        const source = new EventSource('https://connections-societal-thinking-f49fc4a0c28b.herokuapp.com/connectionevents');
+
+        source.addEventListener('message', message => {
+            console.log('Got', message.data);
+            const value = JSON.parse(message.data);
+            let newLinks = {};
+            newLinks[`${value.users[0]}${value.users[1]}`] = { between: value.users }
+            console.log(newLinks);
+            $(".mapcontainer").trigger('update', [{
+                replaceOptions: false,
+                newLinks,
+                animDuration: 1000
+            }]);
+
+
         });
-            console.log(links);
-            setTimeout(()=>{$(".mapcontainer").trigger('update', [{
-                    newPlots: plots, 
-                    newLinks:links,
-                    
-                    animDuration: 1000
-                }]);}, 5000)
-            
-        }).catch((err)=>{console.log(err)});
-
-
-        
     </script>
 
 </head>
 
 <body>
-<div class="container">
-
-    <h1>Map with links between the plotted cities</h1>
-
-    <div class="mapcontainer">
-        <div class="map">
-            <span>Alternative content for the map</span>
+    <div class="container">
+        <div class="mapcontainer">
+            <div class="map">
+                <span>Alternative content for the map</span>
+            </div>
         </div>
+
     </div>
-
-    <p><b>All example for jQuery Mapael are available <a href="https://www.vincentbroute.fr/mapael/">here</a>.</b></p>
-
-</div>
-
 
 </body>
 </html>
