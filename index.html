@@ -94,6 +94,13 @@
                 users.map((value) => {
                     if (value.longitude) {
                         let modifiedValue = { ...value, text: { content: value.name } };
+                        console.log(modifiedValue);
+                        if(Number(value.longitude) === 71.0612 || Number(value.longitude) === 76.9989 || Number(value.longitude) === 85.67909
+                        || Number(value.longitude) === 74.87127) {
+                            modifiedValue.text.position='left';
+                            console.log(modifiedValue)
+                        }
+                        
                         plots[value._id] = modifiedValue;
                     }
                 });
