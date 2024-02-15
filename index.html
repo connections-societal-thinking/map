@@ -75,7 +75,7 @@
                         text: {
                             attrs: {
                                 fill: "#ad9e9e",
-                                "font-size": "2px"
+                                "font-size": "1px"
                             },
                             margin: {x : 1, y: 0}
                         },
@@ -95,7 +95,7 @@
                     if (value.longitude) {
                         let modifiedValue = { ...value, text: { content: value.name } };
                         console.log(modifiedValue);
-                        if(Number(value.longitude) === 71.0612 || Number(value.longitude) === 76.9989 || Number(value.longitude) === 85.67909
+                        if(Number(value.longitude) === 71.0612 || Number(value.longitude) === 74.9989 || Number(value.longitude) === 85.67909
                         || Number(value.longitude) === 74.87127) {
                             modifiedValue.text.position='left';
                             console.log(modifiedValue)
