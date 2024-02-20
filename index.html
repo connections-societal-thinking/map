@@ -63,7 +63,8 @@
                             stroke: "#fffeba"
                         },
                         attrs: {
-                            "stroke-width": 0.6,
+                            "stroke-width": 0.4,
+                            "stroke-opacity": 0.7,
                             stroke: "#fffeba",
                             "stroke-dasharray": "-"
                         }
@@ -94,17 +95,14 @@
                 users.map((value) => {
                     if (value.longitude) {
                         let modifiedValue = { ...value, text: { content: value.name } };
-                        console.log(modifiedValue);
                         if(Number(value.longitude) === 71.0612 || Number(value.longitude) === 74.9989 || Number(value.longitude) === 85.67909
                         || Number(value.longitude) === 74.87127) {
                             modifiedValue.text.position='left';
-                            console.log(modifiedValue)
                         }
                         
                         plots[value._id] = modifiedValue;
                     }
                 });
-                console.log(plots);
                 $(".mapcontainer").trigger('update', [{
                     replaceOptions: false,
                     newPlots: plots,
@@ -115,14 +113,17 @@
                 .then(async (res) => {
                     const users = await res.json();
                     users.map((value) => {
-                        links[`${value.users[0]}${value.users[1]}`] = { between: value.users };
-                    });
-                }).then(() => {
-                    $(".mapcontainer").trigger('update', [{
+                        const newObj={};
+                        newObj[`${value.users[0]}${value.users[1]}`] = { between: value.users };
+                        try{$(".mapcontainer").trigger('update', [{
                         replaceOptions: false,
-                        newLinks: links,
+                        newLinks: newObj,
                         animDuration: 2000
-                    }]);
+                    }]);}
+                    catch(err){
+                        console.log(err,newObj);
+                    }
+                    });
                 });
             });
 
@@ -131,11 +132,9 @@
         const source = new EventSource('https://connections-societal-thinking-f49fc4a0c28b.herokuapp.com/connectionevents');
 
         source.addEventListener('message', message => {
-            console.log('Got', message.data);
             const value = JSON.parse(message.data);
             let newLinks = {};
             newLinks[`${value.users[0]}${value.users[1]}`] = { between: value.users }
-            console.log(newLinks);
             $(".mapcontainer").trigger('update', [{
                 replaceOptions: false,
                 newLinks,
